@@ -1008,6 +1008,8 @@ if (menuToggle && primaryNavigation) {
   });
 }
 
+primaryNavigation.classList.toggle("is-open");
+
 /* =========================================================
    CONTACT FORM
    The contact form remains fixed.
