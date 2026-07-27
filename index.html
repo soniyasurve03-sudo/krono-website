@@ -102,53 +102,42 @@
 
         <div class="container header-container">
 
-            <!-- Logo -->
             <a href="#home" class="brand-logo" aria-label="Krono IINC homepage">
-                <span class="brand-mark">
-                    K
-                </span>
-
-                <span class="brand-name">
-                    KRONO
-                    <small>IINC</small>
-                </span>
+                <span class="brand-mark">K</span>
+                <span class="brand-name">KRONO <small>IINC</small></span>
             </a>
 
-            <!-- Header CTA -->
+            <nav class="main-nav" id="main-navigation" aria-label="Primary navigation">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#process">Process</a></li>
+                    <li><a href="#industries">Industries</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+
             <a href="#contact" class="button button-small header-cta">
                 Book a Strategy Call
                 <i data-lucide="arrow-up-right"></i>
             </a>
 
-            <!-- Mobile Menu Button -->
-            <header class="site-header">
-  <a href="#home" class="site-logo">
-    KRONO IINC
-  </a>
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="main-navigation"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-  <button
-    class="menu-toggle"
-    type="button"
-    aria-label="Open navigation menu"
-    aria-expanded="false"
-    aria-controls="main-navigation"
-  >
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+        </div>
 
-  <nav class="main-nav" id="main-navigation">
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#process">Process</a></li>
-      <li><a href="#industries">Industries</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+    </header>
 
     <!-- =====================================================
          MAIN CONTENT
@@ -344,11 +333,8 @@
                                         Qualified leads
                                     </span>
 
-                                    <strong>
-                                        1,284
-                                    </strong>
                                     <strong data-live-counter data-min="1100" data-max="1450">
-                                        1284
+                                        1,284
                                     </strong>
 
                                     <small class="positive-value">
@@ -1962,11 +1948,11 @@
 
                     </div>
 
-                    <form class="contact-form" id="contact-form" data-contact-form novalidate <h3
-                        class="contact-form-title">
-                        Start a Conversation
+                    <form class="contact-form" id="contact-form" data-contact-form novalidate>
+
+                        <h3 class="contact-form-title">
+                            Start a Conversation
                         </h3>
-                        >
 
                         <div class="form-row">
 
@@ -2301,6 +2287,12 @@
 
     </footer>
 
+    <!-- Animation Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js"></script>
+
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>
 
@@ -2312,13 +2304,6 @@
             }
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js"></script>
-
-    <script src="js/main.js"></script>
 
 </body>
 
