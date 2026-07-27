@@ -1008,48 +1008,11 @@ if (menuToggle && primaryNavigation) {
   });
 }
 
-
-const contactForm = document.querySelector(".contact-form");
-
-if (contactForm) {
-  contactForm.addEventListener("mousemove", (event) => {
-    if (window.innerWidth <= 768) return;
-
-    const rect = contactForm.getBoundingClientRect();
-
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-
-    const rotateY =
-      ((mouseX / rect.width) - 0.5) * 8;
-
-    const rotateX =
-      ((mouseY / rect.height) - 0.5) * -8;
-
-    contactForm.style.setProperty(
-      "--contact-x",
-      `${mouseX}px`
-    );
-
-    contactForm.style.setProperty(
-      "--contact-y",
-      `${mouseY}px`
-    );
-
-    contactForm.style.transform = `
-      perspective(1100px)
-      rotateX(${rotateX}deg)
-      rotateY(${rotateY}deg)
-      translateY(-5px)
-    `;
-  });
-
-  contactForm.addEventListener("mouseleave", () => {
-    contactForm.style.transform = "";
-    contactForm.style.removeProperty("--contact-x");
-    contactForm.style.removeProperty("--contact-y");
-  });
-}
+/* =========================================================
+   CONTACT FORM
+   The contact form remains fixed.
+   No movement or 3D tilt.
+========================================================= */
 /* =========================================================
    INDUSTRY CARD GLOW
    ========================================================= */

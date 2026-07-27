@@ -1538,9 +1538,6 @@ h3 {
     transform: none;
   }
 
-  .hero-visual:hover .dashboard-main {
-    transform: translateY(-4px);
-  }
 
   .metric-grid {
     grid-template-columns: 1fr 1fr;
@@ -2295,7 +2292,6 @@ small {
   transform-style: preserve-3d;
   will-change: transform;
 
-  animation: contactFormFloat 6s ease-in-out infinite;
 
   transition:
     transform 250ms ease,
@@ -2509,7 +2505,13 @@ small {
 
 @media (max-width: 768px) {
   .contact-form {
-    animation: mobileContactFloat 5s ease-in-out infinite;;
+    .contact-form{
+    animation:none;
+    transform:none;
+    transition:
+        border-color .35s ease,
+        box-shadow .35s ease;
+}
   }
 
   .contact-form::after {
@@ -2640,5 +2642,94 @@ small {
   50% {
     opacity: 0.72;
     transform: scale(1.06);
+  }
+}
+
+/* =========================================================
+   STABLE PREMIUM CONTACT FORM
+   ========================================================= */
+
+.contact-form {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  animation: none !important;
+  transform: none !important;
+
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* Keep the form stable even on hover */
+.contact-form:hover {
+  transform: none !important;
+
+  border-color: rgba(105, 166, 227, 0.45);
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(105, 166, 227, 0.1),
+    0 0 35px rgba(105, 166, 227, 0.15);
+}
+
+/* Keep animated light effects behind the form content */
+.contact-form::before,
+.contact-form::after {
+  pointer-events: none;
+}
+
+/* Keep all form content above the glow effects */
+.contact-form > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Stable input fields */
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+  transform: none;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+/* Highlight only the selected field */
+.contact-form input:focus,
+.contact-form textarea:focus,
+.contact-form select:focus {
+  transform: none;
+
+  border-color: rgba(105, 166, 227, 0.95);
+
+  box-shadow:
+    0 0 0 4px rgba(105, 166, 227, 0.12),
+    0 0 24px rgba(105, 166, 227, 0.16);
+}
+
+/* Stable submit button */
+.contact-form button,
+.contact-form .button-primary {
+  transform: none;
+}
+
+.contact-form button:hover,
+.contact-form .button-primary:hover {
+  transform: none;
+}
+
+/* Disable old desktop and mobile floating animations */
+@media (max-width: 768px) {
+  .contact-form {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .contact-form::after {
+    animation: none !important;
   }
 }
