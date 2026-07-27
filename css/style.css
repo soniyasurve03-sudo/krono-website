@@ -4552,8 +4552,16 @@ ul {
   }
 
   .process-timeline {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.process-step {
+  min-width: 0;
+   padding: 24px 18px;
+}
 
   .about-container,
   .contact-container {
@@ -4939,5 +4947,34 @@ ul {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 1250px) and (min-width: 769px) {
+  .process-timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .process-step:nth-child(4),
+  .process-step:nth-child(5) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 1250px) and (min-width: 769px) {
+  .process-timeline {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .process-step {
+    grid-column: span 2;
+  }
+
+  .process-step:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .process-step:nth-child(5) {
+    grid-column: 4 / span 2;
   }
 }
