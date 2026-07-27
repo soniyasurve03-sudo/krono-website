@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initLiveDashboardCounters();
     initServiceCardGlow();
     initIndustryCardGlow();
+    initDashboardPeriodSelector();
 
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
@@ -1476,5 +1477,137 @@ function initIndustryCardGlow() {
                 );
             }
         );
+    });
+}
+
+function initDashboardPeriodSelector() {
+    const periodSelect = document.querySelector(
+        ".chart-card-header select"
+    );
+
+    const chartLine = document.querySelector(
+        ".chart-line, [data-chart-line]"
+    );
+
+    const chartArea = document.querySelector(
+        ".chart-area"
+    );
+
+    const performanceValue = document.querySelector(
+        ".chart-card-header strong"
+    );
+
+    if (!periodSelect || !chartLine || !chartArea) {
+        return;
+    }
+
+    const chartData = {
+        "Last 30 days": {
+            line: `
+                M 0 190
+                C 80 170, 105 150, 160 158
+                C 230 170, 260 95, 320 112
+                C 385 130, 420 45, 480 72
+                C 535 95, 565 35, 600 28
+            `,
+            area: `
+                M 0 190
+                C 80 170, 105 150, 160 158
+                C 230 170, 260 95, 320 112
+                C 385 130, 420 45, 480 72
+                C 535 95, 565 35, 600 28
+                L 600 220
+                L 0 220
+                Z
+            `,
+            value: "+32.6%"
+        },
+
+        "Last 90 days": {
+            line: `
+                M 0 180
+                C 70 165, 120 175, 170 145
+                C 220 115, 270 135, 325 92
+                C 380 52, 430 78, 485 48
+                C 535 25, 570 44, 600 18
+            `,
+            area: `
+                M 0 180
+                C 70 165, 120 175, 170 145
+                C 220 115, 270 135, 325 92
+                C 380 52, 430 78, 485 48
+                C 535 25, 570 44, 600 18
+                L 600 220
+                L 0 220
+                Z
+            `,
+            value: "+48.1%"
+        },
+
+        "This year": {
+            line: `
+                M 0 200
+                C 85 185, 125 145, 175 160
+                C 235 178, 280 110, 335 120
+                C 400 132, 445 70, 500 82
+                C 550 95, 575 50, 600 38
+            `,
+            area: `
+                M 0 200
+                C 85 185, 125 145, 175 160
+                C 235 178, 280 110, 335 120
+                C 400 132, 445 70, 500 82
+                C 550 95, 575 50, 600 38
+                L 600 220
+                L 0 220
+                Z
+            `,
+            value: "+67.4%"
+        }
+    };
+
+    function animateChart(path) {
+        if (typeof path.getTotalLength !== "function") {
+            return;
+        }
+
+        const length = path.getTotalLength();
+
+        path.style.transition = "none";
+        path.style.strokeDasharray = length;
+        path.style.strokeDashoffset = length;
+
+        path.getBoundingClientRect();
+
+        path.style.transition =
+            "stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1)";
+
+        path.style.strokeDashoffset = "0";
+    }
+
+    periodSelect.addEventListener("change", () => {
+        const selectedPeriod = periodSelect.value;
+        const selectedData = chartData[selectedPeriod];
+
+        if (!selectedData) {
+            return;
+        }
+
+        chartLine.setAttribute(
+            "d",
+            selectedData.line.trim()
+        );
+
+        chartArea.setAttribute(
+            "d",
+            selectedData.area.trim()
+        );
+
+        if (performanceValue) {
+            performanceValue.textContent =
+                selectedData.value;
+        }
+
+        animateChart(chartLine);
     });
 }
