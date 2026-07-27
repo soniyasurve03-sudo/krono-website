@@ -5055,3 +5055,31 @@ ul {
 .process-timeline > .process-line {
   position: absolute !important;
 }
+
+/* Keep dashboard controls clickable on desktop */
+
+.dashboard-panel {
+  position: absolute;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.dashboard-chart-card,
+.chart-card-header,
+.chart-card-header select {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
+}
+
+.chart-card-header select {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.floating-card,
+.dashboard-orb,
+.hero-background,
+.particle-field {
+  pointer-events: none !important;
+}

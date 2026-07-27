@@ -508,112 +508,104 @@ function initHeroParallax() {
         return;
     }
 
-    const floatingElements =
-        dashboard.querySelectorAll(
-            ".floating-card, [data-float]"
-        );
+    const floatingElements = dashboard.querySelectorAll(
+        ".floating-card, [data-float]"
+    );
 
-    const prefersReducedMotion =
-        window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    const pointerIsFine =
-        window.matchMedia(
-            "(pointer: fine)"
-        ).matches;
+    const canUsePointerEffects = window.matchMedia(
+        "(pointer: fine)"
+    ).matches;
 
-    if (
-        prefersReducedMotion ||
-        !pointerIsFine
-    ) {
+    if (prefersReducedMotion || !canUsePointerEffects) {
         return;
     }
 
-    let animationFrame = null;
+    let frameId = null;
 
-    hero.addEventListener(
-        "pointermove",
-        (event) => {
-            if (animationFrame) {
-                cancelAnimationFrame(
-                    animationFrame
+    hero.addEventListener("pointermove", (event) => {
+        /* Do not run the 3D movement while using form controls */
+        if (
+            event.target.closest(
+                "select, option, input, button, textarea, a"
+            )
+        ) {
+            return;
+        }
+
+        if (frameId) {
+            cancelAnimationFrame(frameId);
+        }
+
+        frameId = requestAnimationFrame(() => {
+            const bounds = hero.getBoundingClientRect();
+
+            const mouseX =
+                (event.clientX - bounds.left) / bounds.width - 0.5;
+
+            const mouseY =
+                (event.clientY - bounds.top) / bounds.height - 0.5;
+
+            const rotateY = mouseX * 10;
+            const rotateX = mouseY * -8;
+
+            dashboard.style.transform = `
+                perspective(1200px)
+                rotateX(${rotateX}deg)
+                rotateY(${rotateY}deg)
+                translate3d(
+                    ${mouseX * 10}px,
+                    ${mouseY * 10}px,
+                    0
+                )
+            `;
+
+            floatingElements.forEach((element, index) => {
+                const depth = Number(
+                    element.dataset.depth || index + 1
                 );
-            }
 
-            animationFrame =
-                requestAnimationFrame(() => {
-                    const bounds =
-                        hero.getBoundingClientRect();
+                const movement = depth * 4;
 
-                    const mouseX =
-                        (
-                            event.clientX -
-                            bounds.left
-                        ) /
-                            bounds.width -
-                        0.5;
+                element.style.transform = `
+                    translate3d(
+                        ${mouseX * movement}px,
+                        ${mouseY * movement}px,
+                        ${depth * 2}px
+                    )
+                `;
+            });
+        });
+    });
 
-                    const mouseY =
-                        (
-                            event.clientY -
-                            bounds.top
-                        ) /
-                            bounds.height -
-                        0.5;
+    hero.addEventListener("pointerleave", () => {
+        dashboard.style.transform = "";
 
-                    const rotateY =
-                        mouseX * 10;
+        floatingElements.forEach((element) => {
+            element.style.transform = "";
+        });
+    });
 
-                    const rotateX =
-                        mouseY * -8;
-
-                    dashboard.style.transform = `
-                        perspective(1200px)
-                        rotateX(${rotateX}deg)
-                        rotateY(${rotateY}deg)
-                        translate3d(
-                            ${mouseX * 10}px,
-                            ${mouseY * 10}px,
-                            0
-                        )
-                    `;
-
-                    floatingElements.forEach(
-                        (element, index) => {
-                            const depth = Number(
-                                element.dataset.depth ||
-                                    index + 1
-                            );
-
-                            const movement =
-                                depth * 4;
-
-                            element.style.transform = `
-                                translate3d(
-                                    ${mouseX * movement}px,
-                                    ${mouseY * movement}px,
-                                    ${depth * 2}px
-                                )
-                            `;
-                        }
-                    );
-                });
-        }
+    const controls = dashboard.querySelectorAll(
+        "select, input, button, textarea, a"
     );
 
-    hero.addEventListener(
-        "pointerleave",
-        () => {
+    controls.forEach((control) => {
+        control.addEventListener("pointerenter", () => {
             dashboard.style.transform = "";
+        });
 
-            floatingElements.forEach(
-                (element) => {
-                    element.style.transform = "";
-                }
-            );
-        }
-    );
+        control.addEventListener("pointerdown", (event) => {
+            event.stopPropagation();
+        });
+
+        control.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+    });
 }
 
 
