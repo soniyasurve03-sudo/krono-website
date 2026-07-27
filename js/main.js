@@ -980,35 +980,6 @@ card.style.removeProperty("--mouse-y");
 
 });
 
-const menuToggle = document.querySelector(".menu-toggle");
-const primaryNavigation = document.querySelector(".primary-navigation");
-
-if (menuToggle && primaryNavigation) {
-  menuToggle.addEventListener("click", () => {
-    const isOpen = primaryNavigation.classList.toggle("is-open");
-
-    menuToggle.setAttribute("aria-expanded", String(isOpen));
-    document.body.classList.toggle("menu-open", isOpen);
-  });
-
-  primaryNavigation.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      primaryNavigation.classList.remove("is-open");
-      menuToggle.setAttribute("aria-expanded", "false");
-      document.body.classList.remove("menu-open");
-    });
-  });
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 1100) {
-      primaryNavigation.classList.remove("is-open");
-      menuToggle.setAttribute("aria-expanded", "false");
-      document.body.classList.remove("menu-open");
-    }
-  });
-}
-
-primaryNavigation.classList.toggle("is-open");
 
 /* =========================================================
    CONTACT FORM
