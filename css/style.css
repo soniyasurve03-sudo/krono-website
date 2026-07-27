@@ -4978,3 +4978,80 @@ ul {
     grid-column: 4 / span 2;
   }
 }
+
+/* =========================================================
+   PROCESS CARDS — FINAL FIX
+   ========================================================= */
+
+.process-timeline {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  width: 100%;
+}
+
+/* Do not allow the decorative line to occupy a grid column */
+.process-timeline > .process-line {
+  position: absolute !important;
+  top: 64px;
+  left: 5%;
+  right: 5%;
+  z-index: 0;
+  width: auto;
+  height: 2px;
+  pointer-events: none;
+}
+
+/* Only the cards should behave as grid items */
+.process-timeline > .process-step {
+  position: relative;
+  z-index: 2;
+  grid-column: auto !important;
+  min-width: 0;
+  width: 100%;
+  min-height: 375px;
+  padding: 28px 24px;
+}
+
+/* Medium desktop and tablet — 3 cards, then 2 centered */
+@media (max-width: 1250px) and (min-width: 769px) {
+  .process-timeline {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+
+  .process-timeline > .process-step {
+    grid-column: span 2 !important;
+  }
+
+  .process-timeline > .process-step:nth-of-type(4) {
+    grid-column: 2 / span 2 !important;
+  }
+
+  .process-timeline > .process-step:nth-of-type(5) {
+    grid-column: 4 / span 2 !important;
+  }
+
+  .process-timeline > .process-line {
+    display: none !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .process-timeline {
+    grid-template-columns: 1fr !important;
+  }
+
+  .process-timeline > .process-step {
+    grid-column: 1 !important;
+    min-height: auto;
+  }
+
+  .process-timeline > .process-line {
+    display: none !important;
+  }
+}
+.process-timeline > .process-line {
+  position: absolute !important;
+}
