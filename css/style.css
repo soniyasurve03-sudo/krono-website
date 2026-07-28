@@ -5091,3 +5091,8 @@ ul {
     height: 38px;
     stroke-width: 2;
 }
+.service-icon svg {
+    width: 34px !important;
+    height: 34px !important;
+    stroke-width: 2;
+}
