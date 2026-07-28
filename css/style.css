@@ -3268,13 +3268,19 @@ ul {
 }
 
 .hero-dashboard {
-  position: relative;
-  width: 100%;
-  min-height: 580px;
-  transform-style: preserve-3d;
-  transition: transform 0.2s ease-out;
+    max-width:670px;
+    position: relative;
+    width: min(620px, 100%);
+    margin-top: -90px;      /* Move it upward */
+    margin-left: auto;
+    z-index: 5;
 }
 
+.hero-grid{
+    align-items:end;
+    min-height:90vh;
+    column-gap:40px;
+}
 
 /* =========================================================
    DASHBOARD
