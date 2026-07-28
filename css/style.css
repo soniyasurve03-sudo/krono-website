@@ -3882,14 +3882,17 @@ ul {
 }
 
 .industry-icon {
-  display: grid !important;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  margin: 0 !important;
-  border-radius: 16px;
-  color: #ffffff !important;
-  background: linear-gradient(135deg, #17385b, #3c7fc7);
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+}
+
+.industry-icon svg {
+    width: 34px !important;
+    height: 34px !important;
+    max-width: none;
+    max-height: none;
 }
 
 .industry-card h3 {
@@ -5104,4 +5107,10 @@ ul {
 .process-icon svg{
     width:36px !important;
     height:36px !important;
+}
+
+.industry-icon svg {
+    width: 34px !important;
+    height: 34px !important;
+    stroke-width: 2;
 }
