@@ -23,7 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
     initDashboardPeriodSelector();
 
     if (typeof lucide !== "undefined") {
-        lucide.createIcons();
+        lucide.createIcons({
+    attrs: {
+        width: 34,
+        height: 34,
+        "stroke-width": 2.2
+    }
+});
     }
 });
 
@@ -1184,8 +1190,14 @@ function setButtonLoading(
         if (
             typeof lucide !== "undefined"
         ) {
-            lucide.createIcons();
-        }
+            lucide.createIcons({
+    attrs: {
+        width: 34,
+        height: 34,
+        "stroke-width": 2.2
+    }
+});
+          }
     }
 }
 
