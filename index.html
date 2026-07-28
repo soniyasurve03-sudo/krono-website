@@ -2873,6 +2873,8 @@
 
                         </div>
 
+                        <!-- Contact Form  -->
+
                         <div class="contact-card">
 
                             <span class="contact-icon">
@@ -2930,63 +2932,139 @@
 
                     </div>
 
-                    <!-- Contact Form -->
+                   <!-- Contact Form -->
 
-                    <form class="contact-form">
+<form class="contact-form" data-contact-form>
 
-                        <div class="form-row">
+    <div class="form-grid">
 
-                            <input
-                                type="text"
-                                placeholder="Full Name"
-                                required
-                            >
+        <div class="form-group">
+            <label for="full-name">Full Name</label>
 
-                            <input
-                                type="email"
-                                placeholder="Email Address"
-                                required
-                            >
+            <input
+                id="full-name"
+                name="fullName"
+                type="text"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required
+            >
+        </div>
 
-                        </div>
+        <div class="form-group">
+            <label for="email-address">Email Address</label>
 
-                        <div class="form-row">
+            <input
+                id="email-address"
+                name="email"
+                type="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                required
+            >
+        </div>
 
-                            <input
-                                type="text"
-                                placeholder="Company Name"
-                            >
+        <div class="form-group">
+            <label for="company-name">Company Name</label>
 
-                            <input
-                                type="tel"
-                                placeholder="Phone Number"
-                            >
+            <input
+                id="company-name"
+                name="company"
+                type="text"
+                placeholder="Enter your company name"
+                autocomplete="organization"
+            >
+        </div>
 
-                        </div>
+        <div class="form-group">
+            <label for="phone-number">Phone Number</label>
 
-                        <textarea
-                            rows="6"
-                            placeholder="Tell us about your project..."
-                        ></textarea>
+            <input
+                id="phone-number"
+                name="phone"
+                type="tel"
+                placeholder="Enter your phone number"
+                autocomplete="tel"
+                required
+            >
+        </div>
 
-                        <button
-                            class="button button-primary"
-                            type="submit"
-                        >
+        <div class="form-group full">
+            <label for="service-required">Service Required</label>
 
-                            Send Message
+            <select
+                id="service-required"
+                name="service"
+                required
+            >
+                <option value="" selected disabled>
+                    Select a service
+                </option>
 
-                            <i data-lucide="send"></i>
+                <option value="web-development">
+                    Web Development
+                </option>
 
-                        </button>
+                <option value="mobile-development">
+                    Mobile App Development
+                </option>
 
-                    </form>
+                <option value="ui-ux-design">
+                    UI/UX Design
+                </option>
 
-                </div>
+                <option value="cloud-solutions">
+                    Cloud Solutions
+                </option>
 
-            </div>
+                <option value="ai-automation">
+                    AI and Automation
+                </option>
 
-        </section>
+                <option value="business-consulting">
+                    Business Consulting
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group full">
+            <label for="project-details">
+                Tell Us About Your Project
+            </label>
+
+            <textarea
+                id="project-details"
+                name="message"
+                rows="6"
+                placeholder="Tell us about your project, goals and requirements..."
+                required
+            ></textarea>
+        </div>
+
+    </div>
+
+    <button
+        class="button button-primary contact-submit"
+        type="submit"
+    >
+        <span>Send Message</span>
+
+        <i data-lucide="send" aria-hidden="true"></i>
+    </button>
+
+    <div class="contact-trust">
+        <span>
+            <i data-lucide="clock-3"></i>
+            Response within 24 hours
+        </span>
+
+        <span>
+            <i data-lucide="shield-check"></i>
+            Your information is secure
+        </span>
+    </div>
+
+</form>
 
         <!-- =================================================
              FINAL CTA
