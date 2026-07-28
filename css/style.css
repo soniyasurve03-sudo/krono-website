@@ -13,6 +13,7 @@
 --primary-dark:#0043CE;
 --primary-light:#DDEBFF;
 
+
 --secondary:#101828;
 
 --accent:#14B8A6;
@@ -902,10 +903,12 @@ margin-bottom:28px;
 }
 
 .hero-title span{
-display:block;
-background:var(--gradient);
--webkit-background-clip:text;
-color:transparent;
+    display: block;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .hero-description{
