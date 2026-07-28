@@ -5083,3 +5083,11 @@ ul {
 .particle-field {
   pointer-events: none !important;
 }
+
+/* Increase only the icon size */
+
+.service-icon svg {
+    width: 38px;
+    height: 38px;
+    stroke-width: 2;
+}
