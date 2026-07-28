@@ -1,297 +1,192 @@
 "use strict";
 
-/* =========================================================
-   KRONO IINC — MAIN JAVASCRIPT
-   ========================================================= */
+/*==================================================
+  DOM READY
+==================================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
-    initCurrentYear();
-    initNavbar();
-    initScrollProgress();
-    initSmoothScroll();
-    initScrollReveal();
-    initCounters();
-    initHeroParallax();
-    initTiltCards();
-    initDashboardChart();
-    initContactForm();
-    initCursorGlow();
-    initHeroScrollMotion();
-    initLiveDashboardCounters();
-    initServiceCardGlow();
-    initIndustryCardGlow();
-    initDashboardPeriodSelector();
+    initializeLucideIcons();
+    initializeScrollProgress();
+    initializeStickyHeader();
+    initializeMobileNavigation();
+    initializeSmoothScrolling();
+    initializeActiveNavigation();
+    initializeScrollReveal();
+    initializeCounters();
+    initializeDashboardCounters();
+    initializeDashboardChart();
+    initializePipelineBars();
+    initializeHeroParallax();
+    initializeDashboardTilt();
+    initializeCardTilt();
+    initializeCardGlow();
+    initializeCursorGlow();
+    initializeContactForm();
+    initializeCurrentYear();
+});
 
+/*==================================================
+  LUCIDE ICONS
+==================================================*/
+
+function initializeLucideIcons() {
     if (typeof lucide !== "undefined") {
         lucide.createIcons({
-    attrs: {
-        width: 34,
-        height: 34,
-        "stroke-width": 2.2
+            attrs: {
+                "stroke-width": 2
+            }
+        });
     }
-});
-    }
-});
-
-
-/* =========================================================
-   1. CURRENT FOOTER YEAR
-   ========================================================= */
-
-function initCurrentYear() {
-    const yearElements = document.querySelectorAll(
-        "#current-year, [data-current-year]"
-    );
-
-    yearElements.forEach((element) => {
-        element.textContent = new Date().getFullYear();
-    });
 }
 
+/*==================================================
+  SCROLL PROGRESS BAR
+==================================================*/
 
-/* =========================================================
-   2. NAVBAR AND MOBILE MENU
-   ========================================================= */
+function initializeScrollProgress() {
+    const progressBar = document.querySelector(".scroll-progress");
 
-function initNavbar() {
-    const header = document.querySelector(".site-header");
-    const menuButton = document.querySelector(".menu-toggle");
-    const navigation = document.querySelector(".main-nav");
+    if (!progressBar) return;
 
-    if (!header) {
-        return;
-    }
+    const updateProgress = () => {
+        const scrollTop =
+            window.scrollY || document.documentElement.scrollTop;
 
-    const navigationLinks = navigation
-        ? navigation.querySelectorAll('a[href^="#"]')
-        : [];
-
-    function updateHeaderState() {
-        header.classList.toggle(
-            "is-scrolled",
-            window.scrollY > 30
-        );
-    }
-
-    function closeMenu() {
-        if (!menuButton || !navigation) {
-            return;
-        }
-
-        navigation.classList.remove("is-open");
-        menuButton.classList.remove("is-active");
-        menuButton.setAttribute("aria-expanded", "false");
-        document.body.classList.remove("menu-open");
-    }
-
-    updateHeaderState();
-
-    window.addEventListener(
-        "scroll",
-        updateHeaderState,
-        { passive: true }
-    );
-
-    if (menuButton && navigation) {
-        closeMenu();
-
-        menuButton.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const isOpen =
-                navigation.classList.toggle("is-open");
-
-            menuButton.classList.toggle(
-                "is-active",
-                isOpen
-            );
-
-            menuButton.setAttribute(
-                "aria-expanded",
-                String(isOpen)
-            );
-
-            document.body.classList.toggle(
-                "menu-open",
-                isOpen
-            );
-        });
-
-        navigation.addEventListener("click", (event) => {
-            event.stopPropagation();
-        });
-
-        navigationLinks.forEach((link) => {
-            link.addEventListener("click", closeMenu);
-        });
-
-        document.addEventListener("click", closeMenu);
-
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
-                closeMenu();
-            }
-        });
-
-        window.addEventListener("resize", () => {
-            if (window.innerWidth > 768) {
-                closeMenu();
-            }
-        });
-    }
-
-    initActiveNavigationLinks(navigationLinks);
-}
-
-
-function initActiveNavigationLinks(navigationLinks) {
-    if (!navigationLinks.length) {
-        return;
-    }
-
-    const sections = [...navigationLinks]
-        .map((link) => {
-            const selector = link.getAttribute("href");
-
-            if (!selector || selector === "#") {
-                return null;
-            }
-
-            try {
-                return document.querySelector(selector);
-            } catch {
-                return null;
-            }
-        })
-        .filter(Boolean);
-
-    if (!sections.length) {
-        return;
-    }
-
-    if (!("IntersectionObserver" in window)) {
-        return;
-    }
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) {
-                    return;
-                }
-
-                navigationLinks.forEach((link) => {
-                    const linkTarget =
-                        link.getAttribute("href");
-
-                    const isActive =
-                        linkTarget === `#${entry.target.id}`;
-
-                    link.classList.toggle(
-                        "is-active",
-                        isActive
-                    );
-                });
-            });
-        },
-        {
-            rootMargin: "-35% 0px -55% 0px",
-            threshold: 0
-        }
-    );
-
-    sections.forEach((section) => {
-        observer.observe(section);
-    });
-}
-
-
-/* =========================================================
-   3. SCROLL PROGRESS BAR
-   ========================================================= */
-
-function initScrollProgress() {
-    const progressBar = document.querySelector(
-        ".scroll-progress, [data-scroll-progress]"
-    );
-
-    if (!progressBar) {
-        return;
-    }
-
-    function updateProgress() {
-        const scrollableHeight =
+        const scrollHeight =
             document.documentElement.scrollHeight -
-            window.innerHeight;
+            document.documentElement.clientHeight;
 
-        const percentage =
-            scrollableHeight > 0
-                ? (window.scrollY / scrollableHeight) * 100
-                : 0;
+        const scrollPercentage =
+            scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
 
-        progressBar.style.width =
-            `${Math.min(percentage, 100)}%`;
-    }
+        progressBar.style.width = `${scrollPercentage}%`;
+    };
+
+    window.addEventListener("scroll", updateProgress, {
+        passive: true
+    });
 
     updateProgress();
-
-    window.addEventListener(
-        "scroll",
-        updateProgress,
-        { passive: true }
-    );
-
-    window.addEventListener(
-        "resize",
-        updateProgress
-    );
 }
 
+/*==================================================
+  STICKY HEADER
+==================================================*/
 
-/* =========================================================
-   4. SMOOTH SCROLLING
-   ========================================================= */
+function initializeStickyHeader() {
+    const header = document.querySelector(".site-header");
 
-function initSmoothScroll() {
-    const anchorLinks =
-        document.querySelectorAll('a[href^="#"]');
+    if (!header) return;
+
+    const updateHeader = () => {
+        header.classList.toggle("scrolled", window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", updateHeader, {
+        passive: true
+    });
+
+    updateHeader();
+}
+
+/*==================================================
+  MOBILE NAVIGATION
+==================================================*/
+
+function initializeMobileNavigation() {
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navigation = document.querySelector(".main-nav");
+    const navigationLinks = document.querySelectorAll(".main-nav a");
+
+    if (!menuToggle || !navigation) return;
+
+    const openMenu = () => {
+        menuToggle.classList.add("is-active");
+        navigation.classList.add("is-open");
+        document.body.classList.add("menu-open");
+
+        menuToggle.setAttribute("aria-expanded", "true");
+        menuToggle.setAttribute("aria-label", "Close navigation menu");
+    };
+
+    const closeMenu = () => {
+        menuToggle.classList.remove("is-active");
+        navigation.classList.remove("is-open");
+        document.body.classList.remove("menu-open");
+
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open navigation menu");
+    };
+
+    const toggleMenu = () => {
+        const isOpen = navigation.classList.contains("is-open");
+
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    };
+
+    menuToggle.addEventListener("click", toggleMenu);
+
+    navigationLinks.forEach((link) => {
+        link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("click", (event) => {
+        const clickedInsideNavigation = navigation.contains(event.target);
+        const clickedMenuButton = menuToggle.contains(event.target);
+
+        if (
+            navigation.classList.contains("is-open") &&
+            !clickedInsideNavigation &&
+            !clickedMenuButton
+        ) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMenu();
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 992) {
+            closeMenu();
+        }
+    });
+}
+
+/*==================================================
+  SMOOTH SCROLL
+==================================================*/
+
+function initializeSmoothScrolling() {
+    const anchorLinks = document.querySelectorAll('a[href^="#"]');
 
     anchorLinks.forEach((link) => {
         link.addEventListener("click", (event) => {
-            const targetId =
-                link.getAttribute("href");
+            const targetId = link.getAttribute("href");
 
-            if (!targetId || targetId === "#") {
-                return;
-            }
+            if (!targetId || targetId === "#") return;
 
-            let targetElement;
+            const targetSection = document.querySelector(targetId);
 
-            try {
-                targetElement =
-                    document.querySelector(targetId);
-            } catch {
-                return;
-            }
-
-            if (!targetElement) {
-                return;
-            }
+            if (!targetSection) return;
 
             event.preventDefault();
 
-            const header =
-                document.querySelector(".site-header");
-
-            const headerHeight =
-                header ? header.offsetHeight : 0;
+            const header = document.querySelector(".site-header");
+            const headerHeight = header ? header.offsetHeight : 0;
 
             const targetPosition =
-                targetElement.getBoundingClientRect().top +
+                targetSection.getBoundingClientRect().top +
                 window.scrollY -
                 headerHeight -
-                18;
+                15;
 
             window.scrollTo({
                 top: targetPosition,
@@ -301,43 +196,66 @@ function initSmoothScroll() {
     });
 }
 
+/*==================================================
+  ACTIVE NAVIGATION LINK
+==================================================*/
 
-/* =========================================================
-   5. SCROLL REVEAL ANIMATIONS
-   ========================================================= */
-
-function initScrollReveal() {
-    const revealElements = document.querySelectorAll(
-        `
-        .reveal,
-        [data-reveal],
-        .service-card,
-        .industry-card,
-        .case-study-card,
-        .process-step,
-        .stat-item
-        `
+function initializeActiveNavigation() {
+    const sections = document.querySelectorAll("section[id]");
+    const navigationLinks = document.querySelectorAll(
+        '.main-nav a[href^="#"]'
     );
 
-    if (!revealElements.length) {
-        return;
-    }
+    if (!sections.length || !navigationLinks.length) return;
 
-    revealElements.forEach((element, index) => {
-        if (
-            !element.style.getPropertyValue(
-                "--reveal-delay"
-            )
-        ) {
-            const delay =
-                Math.min((index % 6) * 80, 400);
+    const updateActiveNavigation = () => {
+        const header = document.querySelector(".site-header");
+        const headerHeight = header ? header.offsetHeight : 0;
 
-            element.style.setProperty(
-                "--reveal-delay",
-                `${delay}ms`
+        const scrollPosition =
+            window.scrollY + headerHeight + window.innerHeight * 0.25;
+
+        let currentSectionId = "";
+
+        sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+
+            if (
+                scrollPosition >= sectionTop &&
+                scrollPosition < sectionBottom
+            ) {
+                currentSectionId = section.getAttribute("id");
+            }
+        });
+
+        navigationLinks.forEach((link) => {
+            const linkTarget = link
+                .getAttribute("href")
+                .replace("#", "");
+
+            link.classList.toggle(
+                "active",
+                linkTarget === currentSectionId
             );
-        }
+        });
+    };
+
+    window.addEventListener("scroll", updateActiveNavigation, {
+        passive: true
     });
+
+    updateActiveNavigation();
+}
+
+/*==================================================
+  SCROLL REVEAL
+==================================================*/
+
+function initializeScrollReveal() {
+    const revealElements = document.querySelectorAll("[data-reveal]");
+
+    if (!revealElements.length) return;
 
     if (!("IntersectionObserver" in window)) {
         revealElements.forEach((element) => {
@@ -347,64 +265,302 @@ function initScrollReveal() {
         return;
     }
 
-    const observer = new IntersectionObserver(
-        (entries, currentObserver) => {
+    const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
             entries.forEach((entry) => {
-                if (!entry.isIntersecting) {
-                    return;
-                }
+                if (!entry.isIntersecting) return;
 
-                entry.target.classList.add(
-                    "is-visible"
-                );
+                const element = entry.target;
+                const delay = Number(element.dataset.delay || 0);
 
-                currentObserver.unobserve(
-                    entry.target
-                );
+                window.setTimeout(() => {
+                    element.classList.add("is-visible");
+                }, delay);
+
+                observer.unobserve(element);
             });
         },
         {
-            threshold: 0.12,
-            rootMargin: "0px 0px -40px 0px"
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
         }
     );
 
     revealElements.forEach((element) => {
-        observer.observe(element);
+        revealObserver.observe(element);
     });
 }
 
+/*==================================================
+  GENERAL COUNTERS
+==================================================*/
 
-/* =========================================================
-   6. ANIMATED COUNTERS
-   ========================================================= */
+function initializeCounters() {
+    const counters = document.querySelectorAll("[data-counter]");
 
-function initCounters() {
-    const counters = document.querySelectorAll(
-        "[data-counter], .counter"
-    );
+    if (!counters.length) return;
 
-    if (!counters.length) {
-        return;
-    }
+    const animateCounter = (counter) => {
+        const target = Number(counter.dataset.counter || 0);
+        const duration = Number(counter.dataset.duration || 1800);
+        const prefix = counter.dataset.prefix || "";
+        const suffix = counter.dataset.suffix || "";
+
+        const startTime = performance.now();
+
+        const updateCounter = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            const currentValue = Math.floor(target * easedProgress);
+
+            counter.textContent =
+                prefix +
+                formatCounterValue(currentValue) +
+                suffix;
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent =
+                    prefix +
+                    formatCounterValue(target) +
+                    suffix;
+            }
+        };
+
+        requestAnimationFrame(updateCounter);
+    };
 
     if (!("IntersectionObserver" in window)) {
         counters.forEach(animateCounter);
         return;
     }
 
-    const observer = new IntersectionObserver(
-        (entries, currentObserver) => {
+    const counterObserver = new IntersectionObserver(
+        (entries, observer) => {
             entries.forEach((entry) => {
-                if (!entry.isIntersecting) {
-                    return;
-                }
+                if (!entry.isIntersecting) return;
 
                 animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            });
+        },
+        {
+            threshold: 0.45
+        }
+    );
 
-                currentObserver.unobserve(
-                    entry.target
-                );
+    counters.forEach((counter) => {
+        counterObserver.observe(counter);
+    });
+}
+
+function formatCounterValue(value) {
+    return new Intl.NumberFormat("en-US").format(value);
+}
+
+/*==================================================
+  LIVE DASHBOARD COUNTERS
+==================================================*/
+
+function initializeDashboardCounters() {
+    const dashboard = document.querySelector("[data-dashboard]");
+
+    if (!dashboard) return;
+
+    const liveCounters = dashboard.querySelectorAll(
+        "[data-live-counter]"
+    );
+
+    if (!liveCounters.length) return;
+
+    liveCounters.forEach((counter) => {
+        const minimum = Number(counter.dataset.min || 0);
+        const maximum = Number(counter.dataset.max || 100);
+        const decimals = Number(counter.dataset.decimals || 0);
+        const prefix = counter.dataset.prefix || "";
+        const suffix = counter.dataset.suffix || "";
+
+        const updateLiveValue = () => {
+            const randomValue =
+                Math.random() * (maximum - minimum) + minimum;
+
+            counter.textContent =
+                prefix +
+                randomValue.toFixed(decimals) +
+                suffix;
+        };
+
+        updateLiveValue();
+
+        const interval = Number(
+            counter.dataset.interval || 3500
+        );
+
+        window.setInterval(updateLiveValue, interval);
+    });
+}
+
+/*==================================================
+  DASHBOARD CHART
+==================================================*/
+
+function initializeDashboardChart() {
+    const chartContainers = document.querySelectorAll(
+        "[data-dashboard-chart]"
+    );
+
+    if (!chartContainers.length) return;
+
+    chartContainers.forEach((chartContainer) => {
+        const chartLine =
+            chartContainer.querySelector(".chart-line");
+
+        const chartArea =
+            chartContainer.querySelector(".chart-area");
+
+        const chartSelector =
+            chartContainer.querySelector(
+                "[data-chart-selector]"
+            );
+
+        if (!chartLine) return;
+
+        const chartData = {
+            week: [
+                [0, 145],
+                [50, 125],
+                [100, 132],
+                [150, 92],
+                [200, 105],
+                [250, 67],
+                [300, 79],
+                [350, 42],
+                [400, 55],
+                [450, 28]
+            ],
+
+            month: [
+                [0, 158],
+                [50, 141],
+                [100, 118],
+                [150, 127],
+                [200, 88],
+                [250, 98],
+                [300, 61],
+                [350, 74],
+                [400, 38],
+                [450, 22]
+            ],
+
+            year: [
+                [0, 170],
+                [50, 151],
+                [100, 145],
+                [150, 122],
+                [200, 116],
+                [250, 88],
+                [300, 94],
+                [350, 58],
+                [400, 44],
+                [450, 18]
+            ]
+        };
+
+        const createSmoothPath = (points) => {
+            if (!points.length) return "";
+
+            let path = `M ${points[0][0]} ${points[0][1]}`;
+
+            for (let index = 1; index < points.length; index++) {
+                const previous = points[index - 1];
+                const current = points[index];
+
+                const controlX =
+                    (previous[0] + current[0]) / 2;
+
+                path +=
+                    ` C ${controlX} ${previous[1]},` +
+                    ` ${controlX} ${current[1]},` +
+                    ` ${current[0]} ${current[1]}`;
+            }
+
+            return path;
+        };
+
+        const updateChart = (period) => {
+            const points =
+                chartData[period] || chartData.month;
+
+            const linePath = createSmoothPath(points);
+
+            chartLine.setAttribute("d", linePath);
+
+            if (chartArea) {
+                const finalPoint = points[points.length - 1];
+                const areaPath =
+                    `${linePath} ` +
+                    `L ${finalPoint[0]} 190 ` +
+                    `L ${points[0][0]} 190 Z`;
+
+                chartArea.setAttribute("d", areaPath);
+            }
+
+            chartLine.style.animation = "none";
+
+            requestAnimationFrame(() => {
+                chartLine.style.animation = "";
+            });
+        };
+
+        if (chartSelector) {
+            chartSelector.addEventListener("change", () => {
+                updateChart(chartSelector.value);
+            });
+
+            updateChart(chartSelector.value);
+        }
+    });
+}
+
+/*==================================================
+  PIPELINE PROGRESS BARS
+==================================================*/
+
+function initializePipelineBars() {
+    const pipelineItems = document.querySelectorAll(
+        ".pipeline-item[data-progress]"
+    );
+
+    if (!pipelineItems.length) return;
+
+    const animatePipeline = (item) => {
+        const fill = item.querySelector(".pipeline-fill");
+
+        if (!fill) return;
+
+        const progress = Math.min(
+            Number(item.dataset.progress || 0),
+            100
+        );
+
+        fill.style.width = `${progress}%`;
+    };
+
+    if (!("IntersectionObserver" in window)) {
+        pipelineItems.forEach(animatePipeline);
+        return;
+    }
+
+    const pipelineObserver = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                animatePipeline(entry.target);
+                observer.unobserve(entry.target);
             });
         },
         {
@@ -412,1206 +568,467 @@ function initCounters() {
         }
     );
 
-    counters.forEach((counter) => {
-        observer.observe(counter);
-    });
-}
+    pipelineItems.forEach((item) => {
+        const fill = item.querySelector(".pipeline-fill");
 
-
-function animateCounter(element) {
-    if (element.dataset.counterAnimated === "true") {
-        return;
-    }
-
-    element.dataset.counterAnimated = "true";
-
-    const rawTarget =
-        element.dataset.counter ||
-        element.dataset.target ||
-        element.textContent;
-
-    const target = Number.parseFloat(
-        String(rawTarget).replace(/[^\d.-]/g, "")
-    );
-
-    if (!Number.isFinite(target)) {
-        return;
-    }
-
-    const prefix =
-        element.dataset.prefix || "";
-
-    const suffix =
-        element.dataset.suffix ||
-        extractCounterSuffix(element.textContent);
-
-    const decimals = Number.parseInt(
-        element.dataset.decimals || "0",
-        10
-    );
-
-    const duration = Number.parseInt(
-        element.dataset.duration || "1800",
-        10
-    );
-
-    const startTime = performance.now();
-
-    function updateCounter(currentTime) {
-        const elapsed =
-            currentTime - startTime;
-
-        const progress =
-            Math.min(elapsed / duration, 1);
-
-        const easedProgress =
-            1 - Math.pow(1 - progress, 4);
-
-        const currentValue =
-            target * easedProgress;
-
-        element.textContent =
-            prefix +
-            currentValue.toFixed(decimals) +
-            suffix;
-
-        if (progress < 1) {
-            requestAnimationFrame(updateCounter);
-        } else {
-            element.textContent =
-                prefix +
-                target.toFixed(decimals) +
-                suffix;
-        }
-    }
-
-    requestAnimationFrame(updateCounter);
-}
-
-
-function extractCounterSuffix(text) {
-    const match =
-        String(text).match(/[^\d.,\s-]+$/);
-
-    return match ? match[0] : "";
-}
-
-
-/* =========================================================
-   7. HERO DASHBOARD PARALLAX
-   ========================================================= */
-
-function initHeroParallax() {
-    const hero = document.querySelector(
-        ".hero, .hero-section, [data-hero]"
-    );
-
-    const dashboard = document.querySelector(
-        ".hero-dashboard, .dashboard-3d, [data-dashboard]"
-    );
-
-    if (!hero || !dashboard) {
-        return;
-    }
-
-    const floatingElements = dashboard.querySelectorAll(
-        ".floating-card, [data-float]"
-    );
-
-    const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    const canUsePointerEffects = window.matchMedia(
-        "(pointer: fine)"
-    ).matches;
-
-    if (prefersReducedMotion || !canUsePointerEffects) {
-        return;
-    }
-
-    let frameId = null;
-
-    hero.addEventListener("pointermove", (event) => {
-        /* Do not run the 3D movement while using form controls */
-        if (
-            event.target.closest(
-                "select, option, input, button, textarea, a"
-            )
-        ) {
-            return;
+        if (fill) {
+            fill.style.width = "0";
         }
 
-        if (frameId) {
-            cancelAnimationFrame(frameId);
-        }
-
-        frameId = requestAnimationFrame(() => {
-            const bounds = hero.getBoundingClientRect();
-
-            const mouseX =
-                (event.clientX - bounds.left) / bounds.width - 0.5;
-
-            const mouseY =
-                (event.clientY - bounds.top) / bounds.height - 0.5;
-
-            const rotateY = mouseX * 10;
-            const rotateX = mouseY * -8;
-
-            dashboard.style.transform = `
-                perspective(1200px)
-                rotateX(${rotateX}deg)
-                rotateY(${rotateY}deg)
-                translate3d(
-                    ${mouseX * 10}px,
-                    ${mouseY * 10}px,
-                    0
-                )
-            `;
-
-            floatingElements.forEach((element, index) => {
-                const depth = Number(
-                    element.dataset.depth || index + 1
-                );
-
-                const movement = depth * 4;
-
-                element.style.transform = `
-                    translate3d(
-                        ${mouseX * movement}px,
-                        ${mouseY * movement}px,
-                        ${depth * 2}px
-                    )
-                `;
-            });
-        });
-    });
-
-    hero.addEventListener("pointerleave", () => {
-        dashboard.style.transform = "";
-
-        floatingElements.forEach((element) => {
-            element.style.transform = "";
-        });
-    });
-
-    const controls = dashboard.querySelectorAll(
-        "select, input, button, textarea, a"
-    );
-
-    controls.forEach((control) => {
-        control.addEventListener("pointerenter", () => {
-            dashboard.style.transform = "";
-        });
-
-        control.addEventListener("pointerdown", (event) => {
-            event.stopPropagation();
-        });
-
-        control.addEventListener("click", (event) => {
-            event.stopPropagation();
-        });
+        pipelineObserver.observe(item);
     });
 }
 
+/*==================================================
+  HERO PARALLAX
+==================================================*/
 
-/* =========================================================
-   8. SERVICE AND INDUSTRY CARD TILT
-   ========================================================= */
+function initializeHeroParallax() {
+    const hero = document.querySelector(".hero");
+    const dashboard = document.querySelector(".hero-dashboard");
 
-function initTiltCards() {
-    const cards = document.querySelectorAll(
-        ".tilt-card, [data-tilt]"
-    );
-
-    if (!cards.length) {
-        return;
-    }
-
-    const prefersReducedMotion =
-        window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-    const pointerIsFine =
-        window.matchMedia(
-            "(pointer: fine)"
-        ).matches;
+    if (!hero || !dashboard) return;
 
     if (
-        prefersReducedMotion ||
-        !pointerIsFine
+        window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
     ) {
         return;
     }
 
-    cards.forEach((card) => {
-        card.addEventListener(
-            "pointermove",
-            (event) => {
-                const bounds =
-                    card.getBoundingClientRect();
+    if (window.innerWidth <= 992) return;
 
-                const mouseX =
-                    event.clientX - bounds.left;
+    hero.addEventListener("mousemove", (event) => {
+        const heroBounds = hero.getBoundingClientRect();
 
-                const mouseY =
-                    event.clientY - bounds.top;
+        const mouseX =
+            event.clientX - heroBounds.left;
 
-                const percentageX =
-                    mouseX / bounds.width;
+        const mouseY =
+            event.clientY - heroBounds.top;
 
-                const percentageY =
-                    mouseY / bounds.height;
+        const centerX = heroBounds.width / 2;
+        const centerY = heroBounds.height / 2;
 
-                const rotateY =
-                    (percentageX - 0.5) * 8;
+        const moveX = (mouseX - centerX) / 45;
+        const moveY = (mouseY - centerY) / 45;
 
-                const rotateX =
-                    (0.5 - percentageY) * 8;
+        dashboard.style.transform =
+            `translate3d(${moveX}px, ${moveY}px, 0)`;
+    });
 
-                card.style.setProperty(
-                    "--mouse-x",
-                    `${percentageX * 100}%`
-                );
-
-                card.style.setProperty(
-                    "--mouse-y",
-                    `${percentageY * 100}%`
-                );
-
-                card.style.transform = `
-                    perspective(900px)
-                    rotateX(${rotateX}deg)
-                    rotateY(${rotateY}deg)
-                    translateY(-5px)
-                `;
-            }
-        );
-
-        card.addEventListener(
-            "pointerleave",
-            () => {
-                card.style.transform = "";
-
-                card.style.removeProperty(
-                    "--mouse-x"
-                );
-
-                card.style.removeProperty(
-                    "--mouse-y"
-                );
-            }
-        );
+    hero.addEventListener("mouseleave", () => {
+        dashboard.style.transform =
+            "translate3d(0, 0, 0)";
     });
 }
 
+/*==================================================
+  DASHBOARD TILT
+==================================================*/
 
-/* =========================================================
-   9. DASHBOARD CHART ANIMATION
-   ========================================================= */
-
-function initDashboardChart() {
-    const chartPaths =
-        document.querySelectorAll(
-            ".chart-line, [data-chart-line]"
-        );
-
-    const chartBars =
-        document.querySelectorAll(
-            ".chart-bar, [data-chart-bar]"
-        );
-
-    const progressElements =
-        document.querySelectorAll(
-            "[data-progress]"
-        );
-
-    chartPaths.forEach((path) => {
-        if (
-            typeof path.getTotalLength !==
-            "function"
-        ) {
-            return;
-        }
-
-        const totalLength =
-            path.getTotalLength();
-
-        path.style.strokeDasharray =
-            String(totalLength);
-
-        path.style.strokeDashoffset =
-            String(totalLength);
-
-        requestAnimationFrame(() => {
-            path.style.transition =
-                "stroke-dashoffset 1.8s cubic-bezier(0.22, 1, 0.36, 1)";
-
-            path.style.strokeDashoffset = "0";
-        });
-    });
-
-    chartBars.forEach((bar, index) => {
-        const targetHeight =
-            bar.dataset.height ||
-            bar.dataset.value ||
-            bar.style.height ||
-            "70%";
-
-        bar.style.height = "0";
-
-        window.setTimeout(() => {
-            bar.style.height = targetHeight;
-        }, 250 + index * 120);
-    });
-
-    progressElements.forEach((element) => {
-        const progress = Math.min(
-            Number.parseFloat(
-                element.dataset.progress
-            ) || 0,
-            100
-        );
-
-        element.style.setProperty(
-            "--progress-value",
-            `${progress}%`
-        );
-
-        const fill = element.querySelector(
-            ".progress-fill, .pipeline-fill"
-        );
-
-        if (fill) {
-            requestAnimationFrame(() => {
-                fill.style.width =
-                    `${progress}%`;
-            });
-        }
-    });
-}
-
-
-/* =========================================================
-   10. CONTACT FORM VALIDATION
-   Contact form remains stable.
-   ========================================================= */
-
-function initContactForm() {
-    const form = document.querySelector(
-        "#contact-form, .contact-form, [data-contact-form]"
+function initializeDashboardTilt() {
+    const dashboardPanel = document.querySelector(
+        ".dashboard-panel"
     );
 
-    if (!form) {
+    if (!dashboardPanel) return;
+
+    if (
+        window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+    ) {
         return;
     }
 
-    const submitButton = form.querySelector(
-        'button[type="submit"], input[type="submit"]'
+    if (window.innerWidth <= 992) return;
+
+    dashboardPanel.addEventListener("mousemove", (event) => {
+        const bounds =
+            dashboardPanel.getBoundingClientRect();
+
+        const mouseX = event.clientX - bounds.left;
+        const mouseY = event.clientY - bounds.top;
+
+        const rotateY =
+            ((mouseX / bounds.width) - 0.5) * 8;
+
+        const rotateX =
+            ((mouseY / bounds.height) - 0.5) * -8;
+
+        dashboardPanel.style.transform =
+            `perspective(1400px) ` +
+            `rotateX(${rotateX}deg) ` +
+            `rotateY(${rotateY}deg) ` +
+            `translateY(-6px)`;
+    });
+
+    dashboardPanel.addEventListener("mouseleave", () => {
+        dashboardPanel.style.transform =
+            "rotateX(2deg) rotateY(-3deg)";
+    });
+}
+
+/*==================================================
+  CARD TILT EFFECT
+==================================================*/
+
+function initializeCardTilt() {
+    const tiltCards = document.querySelectorAll(
+        "[data-tilt]"
     );
 
-    const statusElement =
-        getOrCreateFormStatus(form);
+    if (!tiltCards.length) return;
 
-    form.addEventListener(
-        "submit",
-        async (event) => {
-            event.preventDefault();
+    if (
+        window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+    ) {
+        return;
+    }
 
-            clearFormErrors(form);
+    tiltCards.forEach((card) => {
+        card.addEventListener("mousemove", (event) => {
+            if (window.innerWidth <= 992) return;
 
-            const fields = {
-                name: form.querySelector(
-                    '[name="name"], [name="fullName"]'
-                ),
+            const bounds = card.getBoundingClientRect();
 
-                email:
-                    form.querySelector(
-                        '[name="email"]'
-                    ),
+            const mouseX =
+                event.clientX - bounds.left;
 
-                phone:
-                    form.querySelector(
-                        '[name="phone"]'
-                    ),
+            const mouseY =
+                event.clientY - bounds.top;
 
-                message:
-                    form.querySelector(
-                        '[name="message"], textarea'
-                    ),
+            const rotateY =
+                ((mouseX / bounds.width) - 0.5) * 6;
 
-                consent:
-                    form.querySelector(
-                        '[name="consent"]'
-                    )
-            };
+            const rotateX =
+                ((mouseY / bounds.height) - 0.5) * -6;
 
-            const errors =
-                validateContactFields(fields);
+            card.style.transform =
+                `perspective(900px) ` +
+                `rotateX(${rotateX}deg) ` +
+                `rotateY(${rotateY}deg) ` +
+                `translateY(-10px)`;
+        });
 
-            if (errors.length > 0) {
-                errors.forEach(
-                    ({ field, message }) => {
-                        showFieldError(
-                            field,
-                            message
-                        );
-                    }
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+        });
+    });
+}
+
+/*==================================================
+  CARD CURSOR GLOW
+==================================================*/
+
+function initializeCardGlow() {
+    const glowCards = document.querySelectorAll(
+        ".service-card, .industry-card"
+    );
+
+    glowCards.forEach((card) => {
+        card.addEventListener("mousemove", (event) => {
+            const bounds = card.getBoundingClientRect();
+
+            const glowX =
+                event.clientX - bounds.left;
+
+            const glowY =
+                event.clientY - bounds.top;
+
+            card.style.setProperty(
+                "--glow-x",
+                `${glowX}px`
+            );
+
+            card.style.setProperty(
+                "--glow-y",
+                `${glowY}px`
+            );
+        });
+    });
+}
+
+/*==================================================
+  HERO CURSOR GLOW
+==================================================*/
+
+function initializeCursorGlow() {
+    const hero = document.querySelector(".hero");
+    const cursorGlow =
+        document.querySelector(".cursor-glow");
+
+    if (!hero || !cursorGlow) return;
+
+    if (
+        window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+    ) {
+        cursorGlow.style.display = "none";
+        return;
+    }
+
+    if (window.innerWidth <= 992) {
+        cursorGlow.style.display = "none";
+        return;
+    }
+
+    hero.addEventListener("mousemove", (event) => {
+        const heroBounds = hero.getBoundingClientRect();
+
+        const positionX =
+            event.clientX - heroBounds.left;
+
+        const positionY =
+            event.clientY - heroBounds.top;
+
+        cursorGlow.style.left = `${positionX}px`;
+        cursorGlow.style.top = `${positionY}px`;
+
+        cursorGlow.style.transform =
+            "translate(-50%, -50%)";
+
+        cursorGlow.style.opacity = "0.75";
+    });
+
+    hero.addEventListener("mouseleave", () => {
+        cursorGlow.style.opacity = "0";
+    });
+}
+
+/*==================================================
+  CONTACT FORM VALIDATION
+==================================================*/
+
+function initializeContactForm() {
+    const contactForm = document.querySelector(
+        "[data-contact-form]"
+    );
+
+    if (!contactForm) return;
+
+    const submitButton = contactForm.querySelector(
+        'button[type="submit"]'
+    );
+
+    contactForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        clearFormMessages(contactForm);
+
+        const requiredFields =
+            contactForm.querySelectorAll("[required]");
+
+        let isValid = true;
+        let firstInvalidField = null;
+
+        requiredFields.forEach((field) => {
+            const fieldValue = field.value.trim();
+
+            if (!fieldValue) {
+                showFieldError(
+                    field,
+                    "This field is required."
                 );
 
-                statusElement.textContent =
-                    "Please check the highlighted fields.";
+                isValid = false;
 
-                statusElement.className =
-                    "form-status is-error";
-
-                errors[0].field.focus();
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
 
                 return;
             }
 
-            setButtonLoading(
-                submitButton,
-                true
+            if (
+                field.type === "email" &&
+                !isValidEmail(fieldValue)
+            ) {
+                showFieldError(
+                    field,
+                    "Please enter a valid email address."
+                );
+
+                isValid = false;
+
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
+            }
+
+            if (
+                field.type === "tel" &&
+                !isValidPhone(fieldValue)
+            ) {
+                showFieldError(
+                    field,
+                    "Please enter a valid phone number."
+                );
+
+                isValid = false;
+
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
+            }
+        });
+
+        if (!isValid) {
+            firstInvalidField?.focus();
+            return;
+        }
+
+        const originalButtonContent =
+            submitButton?.innerHTML || "";
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML =
+                `<span>Sending...</span>`;
+        }
+
+        window.setTimeout(() => {
+            showFormSuccess(
+                contactForm,
+                "Thank you. Your enquiry has been received. Our team will contact you shortly."
             );
 
-            statusElement.textContent =
-                "Submitting your enquiry...";
+            contactForm.reset();
 
-            statusElement.className =
-                "form-status is-loading";
-
-            try {
-                /*
-                  This is currently a front-end
-                  demonstration form.
-
-                  Replace this simulation with a real
-                  API or form service when ready.
-                */
-
-                await simulateRequest(900);
-
-                statusElement.textContent =
-                    "Thank you. Your enquiry has been submitted successfully.";
-
-                statusElement.className =
-                    "form-status is-success";
-
-                form.reset();
-            } catch (error) {
-                console.error(
-                    "Contact form error:",
-                    error
-                );
-
-                statusElement.textContent =
-                    "We could not submit the form. Please try again.";
-
-                statusElement.className =
-                    "form-status is-error";
-            } finally {
-                setButtonLoading(
-                    submitButton,
-                    false
-                );
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML =
+                    originalButtonContent;
             }
-        }
+
+            initializeLucideIcons();
+        }, 1200);
+    });
+
+    const formFields = contactForm.querySelectorAll(
+        "input, textarea, select"
     );
 
-    form.addEventListener(
-        "input",
-        (event) => {
-            const field = event.target;
-
-            if (
-                field instanceof
-                    HTMLInputElement ||
-                field instanceof
-                    HTMLTextAreaElement ||
-                field instanceof
-                    HTMLSelectElement
-            ) {
-                removeFieldError(field);
-            }
-        }
-    );
-
-    form.addEventListener(
-        "change",
-        (event) => {
-            const field = event.target;
-
-            if (
-                field instanceof
-                HTMLInputElement
-            ) {
-                removeFieldError(field);
-            }
-        }
-    );
-}
-
-
-function validateContactFields(fields) {
-    const errors = [];
-
-    if (
-        !fields.name ||
-        fields.name.value.trim().length < 2
-    ) {
-        if (fields.name) {
-            errors.push({
-                field: fields.name,
-                message:
-                    "Please enter your full name."
-            });
-        }
-    }
-
-    if (
-        !fields.email ||
-        !isValidEmail(
-            fields.email.value.trim()
-        )
-    ) {
-        if (fields.email) {
-            errors.push({
-                field: fields.email,
-                message:
-                    "Please enter a valid email address."
-            });
-        }
-    }
-
-    if (
-        fields.phone &&
-        fields.phone.value.trim() &&
-        !isValidPhone(
-            fields.phone.value.trim()
-        )
-    ) {
-        errors.push({
-            field: fields.phone,
-            message:
-                "Please enter a valid phone number."
+    formFields.forEach((field) => {
+        field.addEventListener("input", () => {
+            removeFieldError(field);
         });
-    }
 
-    if (
-        !fields.message ||
-        fields.message.value.trim().length < 10
-    ) {
-        if (fields.message) {
-            errors.push({
-                field: fields.message,
-                message:
-                    "Please enter at least 10 characters in your message."
-            });
-        }
-    }
-
-    if (
-        fields.consent &&
-        !fields.consent.checked
-    ) {
-        errors.push({
-            field: fields.consent,
-            message:
-                "Please agree to be contacted."
+        field.addEventListener("change", () => {
+            removeFieldError(field);
         });
-    }
-
-    return errors;
+    });
 }
-
-
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(
-        email
-    );
-}
-
-
-function isValidPhone(phone) {
-    const cleanedPhone =
-        phone.replace(/[\s()+-]/g, "");
-
-    return /^\d{7,15}$/.test(
-        cleanedPhone
-    );
-}
-
 
 function showFieldError(field, message) {
-    field.classList.add("has-error");
+    field.classList.add("is-invalid");
+    field.setAttribute("aria-invalid", "true");
 
-    field.setAttribute(
-        "aria-invalid",
-        "true"
-    );
+    const formGroup = field.closest(".form-group");
 
-    const wrapper =
-        field.closest(
-            ".form-group, .input-group, .form-consent"
-        ) ||
-        field.parentElement;
+    if (!formGroup) return;
 
-    if (!wrapper) {
+    const existingError =
+        formGroup.querySelector(".field-error");
+
+    if (existingError) {
+        existingError.textContent = message;
         return;
     }
-
-    let errorElement =
-        wrapper.querySelector(
-            ".field-error"
-        );
-
-    if (!errorElement) {
-        errorElement =
-            document.createElement("small");
-
-        errorElement.className =
-            "field-error";
-
-        wrapper.appendChild(
-            errorElement
-        );
-    }
-
-    errorElement.textContent = message;
-}
-
-
-function removeFieldError(field) {
-    field.classList.remove("has-error");
-
-    field.removeAttribute(
-        "aria-invalid"
-    );
-
-    const wrapper =
-        field.closest(
-            ".form-group, .input-group, .form-consent"
-        ) ||
-        field.parentElement;
 
     const errorElement =
-        wrapper?.querySelector(
-            ".field-error"
-        );
+        document.createElement("span");
 
-    if (errorElement) {
-        errorElement.remove();
-    }
+    errorElement.className = "field-error";
+    errorElement.textContent = message;
+
+    formGroup.appendChild(errorElement);
 }
 
+function removeFieldError(field) {
+    field.classList.remove("is-invalid");
+    field.removeAttribute("aria-invalid");
 
-function clearFormErrors(form) {
-    form.querySelectorAll(
-        ".has-error"
-    ).forEach((field) => {
-        field.classList.remove(
-            "has-error"
-        );
+    const formGroup = field.closest(".form-group");
 
-        field.removeAttribute(
-            "aria-invalid"
-        );
-    });
-
-    form.querySelectorAll(
-        ".field-error"
-    ).forEach((element) => {
-        element.remove();
-    });
+    formGroup
+        ?.querySelector(".field-error")
+        ?.remove();
 }
 
+function clearFormMessages(form) {
+    form.querySelectorAll(".field-error").forEach(
+        (error) => error.remove()
+    );
 
-function getOrCreateFormStatus(form) {
-    let statusElement =
-        form.querySelector(
-            ".form-status, [data-form-status]"
-        );
-
-    if (!statusElement) {
-        statusElement =
-            document.createElement("div");
-
-        statusElement.className =
-            "form-status";
-
-        statusElement.setAttribute(
-            "aria-live",
-            "polite"
-        );
-
-        form.appendChild(
-            statusElement
-        );
-    }
-
-    return statusElement;
-}
-
-
-function setButtonLoading(
-    button,
-    isLoading
-) {
-    if (!button) {
-        return;
-    }
-
-    if (isLoading) {
-        button.dataset.originalText =
-            button.textContent.trim() ||
-            "Submit";
-
-        button.textContent =
-            "Submitting...";
-
-        button.disabled = true;
-
-        button.classList.add(
-            "is-loading"
-        );
-    } else {
-        button.textContent =
-            button.dataset.originalText ||
-            "Submit";
-
-        button.disabled = false;
-
-        button.classList.remove(
-            "is-loading"
-        );
-
-        if (
-            typeof lucide !== "undefined"
-        ) {
-            lucide.createIcons({
-    attrs: {
-        width: 34,
-        height: 34,
-        "stroke-width": 2.2
-    }
-});
-          }
-    }
-}
-
-
-function simulateRequest(delay) {
-    return new Promise((resolve) => {
-        window.setTimeout(
-            resolve,
-            delay
-        );
-    });
-}
-
-
-/* =========================================================
-   11. HERO CURSOR GLOW
-   ========================================================= */
-
-function initCursorGlow() {
-    const hero =
-        document.querySelector(".hero");
-
-    const glow =
-        document.querySelector(
-            ".cursor-glow"
-        );
-
-    if (!hero || !glow) {
-        return;
-    }
-
-    const pointerIsFine =
-        window.matchMedia(
-            "(pointer: fine)"
-        ).matches;
-
-    if (!pointerIsFine) {
-        return;
-    }
-
-    hero.addEventListener(
-        "pointermove",
-        (event) => {
-            const bounds =
-                hero.getBoundingClientRect();
-
-            const x =
-                event.clientX - bounds.left;
-
-            const y =
-                event.clientY - bounds.top;
-
-            glow.style.left = `${x}px`;
-            glow.style.top = `${y}px`;
-            glow.style.opacity = "1";
+    form.querySelectorAll(".is-invalid").forEach(
+        (field) => {
+            field.classList.remove("is-invalid");
+            field.removeAttribute("aria-invalid");
         }
     );
 
-    hero.addEventListener(
-        "pointerleave",
-        () => {
-            glow.style.opacity = "0";
-        }
-    );
+    form.querySelector(".form-success")?.remove();
 }
 
+function showFormSuccess(form, message) {
+    const successElement =
+        document.createElement("div");
 
-/* =========================================================
-   12. HERO SCROLL MOTION
-   ========================================================= */
+    successElement.className = "form-success";
+    successElement.setAttribute("role", "status");
 
-function initHeroScrollMotion() {
-    const dashboard =
-        document.querySelector(
-            ".hero-dashboard"
-        );
+    successElement.innerHTML = `
+        <i data-lucide="circle-check"></i>
+        <span>${message}</span>
+    `;
 
-    const heroContent =
-        document.querySelector(
-            ".hero-content"
-        );
+    form.prepend(successElement);
 
-    const hero =
-        document.querySelector(
-            ".hero"
-        );
-
-    if (
-        !dashboard ||
-        !heroContent ||
-        !hero
-    ) {
-        return;
-    }
-
-    const prefersReducedMotion =
-        window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-    if (prefersReducedMotion) {
-        return;
-    }
-
-    function updateHeroScroll() {
-        const heroHeight =
-            hero.offsetHeight ||
-            window.innerHeight;
-
-        const progress = Math.min(
-            window.scrollY / heroHeight,
-            1
-        );
-
-        dashboard.style.translate = `
-            0 ${progress * 60}px
-        `;
-
-        dashboard.style.scale =
-            `${1 - progress * 0.04}`;
-
-        heroContent.style.transform = `
-            translateY(${progress * 25}px)
-        `;
-
-        heroContent.style.opacity =
-            `${1 - progress * 0.25}`;
-    }
-
-    updateHeroScroll();
-
-    window.addEventListener(
-        "scroll",
-        updateHeroScroll,
-        { passive: true }
-    );
+    initializeLucideIcons();
 }
 
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-/* =========================================================
-   13. LIVE DASHBOARD COUNTER
-   ========================================================= */
+function isValidPhone(phone) {
+    const cleanedPhone = phone.replace(
+        /[\s()+-]/g,
+        ""
+    );
 
-function initLiveDashboardCounters() {
-    const counters =
-        document.querySelectorAll(
-            "[data-live-counter]"
-        );
+    return /^\d{7,15}$/.test(cleanedPhone);
+}
 
-    if (!counters.length) {
-        return;
-    }
+/*==================================================
+  FOOTER CURRENT YEAR
+==================================================*/
 
-    counters.forEach((counter) => {
-        const minimum = Number(
-            counter.dataset.min || 100
-        );
+function initializeCurrentYear() {
+    const yearElements = document.querySelectorAll(
+        "[data-current-year]"
+    );
 
-        const maximum = Number(
-            counter.dataset.max || 500
-        );
+    const currentYear =
+        new Date().getFullYear();
 
-        window.setInterval(() => {
-            const nextValue =
-                Math.floor(
-                    Math.random() *
-                        (
-                            maximum -
-                            minimum +
-                            1
-                        ) +
-                        minimum
-                );
-
-            counter.textContent =
-                nextValue.toLocaleString();
-        }, 3000);
+    yearElements.forEach((element) => {
+        element.textContent = currentYear;
     });
 }
 
+/*==================================================
+  REDUCED MOTION SUPPORT
+==================================================*/
 
-/* =========================================================
-   14. SERVICE CARD GLOW
-   ========================================================= */
+const reducedMotionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+);
 
-function initServiceCardGlow() {
-    const serviceCards =
-        document.querySelectorAll(
-            ".service-card"
-        );
-
-    serviceCards.forEach((card) => {
-        card.addEventListener(
-            "pointermove",
-            (event) => {
-                if (
-                    event.pointerType ===
-                    "touch"
-                ) {
-                    return;
-                }
-
-                const rect =
-                    card.getBoundingClientRect();
-
-                card.style.setProperty(
-                    "--mouse-x",
-                    `${event.clientX - rect.left}px`
-                );
-
-                card.style.setProperty(
-                    "--mouse-y",
-                    `${event.clientY - rect.top}px`
-                );
-            }
-        );
-
-        card.addEventListener(
-            "pointerleave",
-            () => {
-                card.style.removeProperty(
-                    "--mouse-x"
-                );
-
-                card.style.removeProperty(
-                    "--mouse-y"
-                );
-            }
-        );
-    });
-}
-
-
-/* =========================================================
-   15. INDUSTRY CARD GLOW
-   Correct HTML selector: .industries-grid
-   ========================================================= */
-
-function initIndustryCardGlow() {
-    const industryCards =
-        document.querySelectorAll(
-            ".industries-grid .industry-card"
-        );
-
-    industryCards.forEach((card) => {
-        card.addEventListener(
-            "pointermove",
-            (event) => {
-                if (
-                    window.innerWidth <= 768 ||
-                    event.pointerType ===
-                        "touch"
-                ) {
-                    return;
-                }
-
-                const rect =
-                    card.getBoundingClientRect();
-
-                card.style.setProperty(
-                    "--mouse-x",
-                    `${event.clientX - rect.left}px`
-                );
-
-                card.style.setProperty(
-                    "--mouse-y",
-                    `${event.clientY - rect.top}px`
-                );
-            }
-        );
-
-        card.addEventListener(
-            "pointerleave",
-            () => {
-                card.style.removeProperty(
-                    "--mouse-x"
-                );
-
-                card.style.removeProperty(
-                    "--mouse-y"
-                );
-            }
-        );
-    });
-}
-
-function initDashboardPeriodSelector() {
-    const periodSelect = document.querySelector(
-        ".chart-card-header select"
+if (reducedMotionQuery.matches) {
+    document.documentElement.classList.add(
+        "reduced-motion"
     );
-
-    const chartLine = document.querySelector(
-        ".chart-line, [data-chart-line]"
-    );
-
-    const chartArea = document.querySelector(
-        ".chart-area"
-    );
-
-    const performanceValue = document.querySelector(
-        ".chart-card-header strong"
-    );
-
-    if (!periodSelect || !chartLine || !chartArea) {
-        return;
-    }
-
-    const chartData = {
-        "Last 30 days": {
-            line: `
-                M 0 190
-                C 80 170, 105 150, 160 158
-                C 230 170, 260 95, 320 112
-                C 385 130, 420 45, 480 72
-                C 535 95, 565 35, 600 28
-            `,
-            area: `
-                M 0 190
-                C 80 170, 105 150, 160 158
-                C 230 170, 260 95, 320 112
-                C 385 130, 420 45, 480 72
-                C 535 95, 565 35, 600 28
-                L 600 220
-                L 0 220
-                Z
-            `,
-            value: "+32.6%"
-        },
-
-        "Last 90 days": {
-            line: `
-                M 0 180
-                C 70 165, 120 175, 170 145
-                C 220 115, 270 135, 325 92
-                C 380 52, 430 78, 485 48
-                C 535 25, 570 44, 600 18
-            `,
-            area: `
-                M 0 180
-                C 70 165, 120 175, 170 145
-                C 220 115, 270 135, 325 92
-                C 380 52, 430 78, 485 48
-                C 535 25, 570 44, 600 18
-                L 600 220
-                L 0 220
-                Z
-            `,
-            value: "+48.1%"
-        },
-
-        "This year": {
-            line: `
-                M 0 200
-                C 85 185, 125 145, 175 160
-                C 235 178, 280 110, 335 120
-                C 400 132, 445 70, 500 82
-                C 550 95, 575 50, 600 38
-            `,
-            area: `
-                M 0 200
-                C 85 185, 125 145, 175 160
-                C 235 178, 280 110, 335 120
-                C 400 132, 445 70, 500 82
-                C 550 95, 575 50, 600 38
-                L 600 220
-                L 0 220
-                Z
-            `,
-            value: "+67.4%"
-        }
-    };
-
-    function animateChart(path) {
-        if (typeof path.getTotalLength !== "function") {
-            return;
-        }
-
-        const length = path.getTotalLength();
-
-        path.style.transition = "none";
-        path.style.strokeDasharray = length;
-        path.style.strokeDashoffset = length;
-
-        path.getBoundingClientRect();
-
-        path.style.transition =
-            "stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1)";
-
-        path.style.strokeDashoffset = "0";
-    }
-
-    periodSelect.addEventListener("change", () => {
-        const selectedPeriod = periodSelect.value;
-        const selectedData = chartData[selectedPeriod];
-
-        if (!selectedData) {
-            return;
-        }
-
-        chartLine.setAttribute(
-            "d",
-            selectedData.line.trim()
-        );
-
-        chartArea.setAttribute(
-            "d",
-            selectedData.area.trim()
-        );
-
-        if (performanceValue) {
-            performanceValue.textContent =
-                selectedData.value;
-        }
-
-        animateChart(chartLine);
-    });
 }
