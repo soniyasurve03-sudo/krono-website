@@ -5221,3 +5221,76 @@ ul {
 
     box-shadow:0 18px 45px rgba(23,56,91,.18);
 }
+
+/* Increase only the icon */
+
+.contact-detail > span svg,
+.contact-detail > span .lucide {
+    width: 28px !important;
+    height: 28px !important;
+    stroke-width: 2.2 !important;
+}
+.contact-detail {
+    transition: all .3s ease;
+}
+
+.contact-detail:hover > span {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(60,127,199,.25);
+}
+
+.contact-detail:hover svg {
+    transform: scale(1.1);
+}
+
+.trusted-item svg,
+.trusted-item .lucide{
+    width:24px;
+    height:24px;
+    stroke-width:2.2;
+    color:#2F63A6;
+}
+
+.trusted-item{
+    font-size:1.05rem;
+    font-weight:700;
+    color:#44546C;
+}
+.trusted-item{
+    gap:12px;
+}
+
+.trusted-item{
+    transition:all .3s ease;
+}
+
+.trusted-item:hover{
+    transform:translateY(-3px);
+}
+
+.trusted-item:hover svg{
+    transform:scale(1.15);
+    color:#17385B;
+}
+
+.trusted-heading::after{
+    content:"";
+    display:block;
+
+    width:80px;
+    height:3px;
+
+    margin:14px auto 0;
+
+    border-radius:20px;
+
+    background:linear-gradient(
+        90deg,
+        #3C7FC7,
+        #69A6E3
+    );
+}
+.trusted-section{
+    padding:55px 0;
+}
+
