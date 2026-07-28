@@ -5294,3 +5294,30 @@ ul {
     padding:55px 0;
 }
 
+.hero-person{
+    animation:floatHero 6s ease-in-out infinite;
+}
+
+@keyframes floatHero{
+
+0%,100%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-8px);
+}
+
+}
+
+.hero-person img{
+
+    width:480px;
+
+    border-radius:28px;
+
+    object-fit:cover;
+
+    filter:drop-shadow(0 40px 60px rgba(0,0,0,.18));
+}
+
